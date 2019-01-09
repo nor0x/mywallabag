@@ -1,0 +1,69 @@
+security:
+    encoders:
+        FOS\UserBundle\Model\UserInterface: sha512
+
+    role_hierarchy:
+        ROLE_ADMIN: ROLE_USER
+        ROLE_SUPER_ADMIN: [ ROLE_USER, ROLE_ADMIN, ROLE_ALLOWED_TO_SWITCH ]
+
+    providers:
+        administrators:
+            entity:
+                class: WallabagUserBundle:User
+                property: username
+        fos_userbundle:
+            id: fos_user.user_provider.username_email
+
+    # the main part of the security, where you can set up firewalls
+    # for specific sections of your app
+    firewalls:
+        # disables authentication for assets and the profiler, adapt it according to your needs
+        dev:
+            pattern: ^/(_(profiler|wdt)|css|images|js)/
+            security: false
+
+        oauth_token:
+            pattern: ^/oauth/v2/token
+            security: false
+
+        api:
+            pattern: /api/.*
+            fos_oauth: true
+            stateless: true
+            anonymous: true
+
+        login_firewall:
+            pattern: ^/login$
+            anonymous:  ~
+
+        secured_area:
+            pattern: ^/
+            form_login:
+                provider: fos_userbundle
+                csrf_token_generator: security.csrf.token_manager
+
+            anonymous: true
+            remember_me:
+                secret: "%secret%"
+                lifetime: 31536000
+                path: /
+                domain: ~
+
+            logout:
+                path:   /logout
+                target: /
+
+    access_control:
+        - { path: ^/api/doc, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/api/version, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/api/user, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/register, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/resetting, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: /(unread|starred|archive|all).xml$, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: /tags/(.*).xml$, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/share, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/settings, roles: ROLE_SUPER_ADMIN }
+        - { path: ^/annotations, roles: ROLE_USER }
+        - { path: ^/users, roles: ROLE_SUPER_ADMIN }
+        - { path: ^/, roles: ROLE_USER }

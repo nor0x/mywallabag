@@ -1,0 +1,24 @@
+{% extends "WallabagCoreBundle::layout.html.twig" %}
+
+{% block title %}{{ 'tag.page_title'|trans }}{% endblock %}
+
+{% block content %}
+    <div class="results">
+        <div class="nb-results">{{ 'tag.list.number_on_the_page'|transchoice(tags|length) }}</div>
+    </div>
+
+    <ul>
+    {% for tag in tags %}
+        <li id="tag-{{ tag.id|e }}">
+            <a href="{{ path('tag_entries', {'slug': tag.slug}) }}">{{tag.label}} ({{ tag.nbEntries }})</a>
+            <a rel="alternate" type="application/rss+xml" href="{{ path('tag_rss', {'username': app.user.username, 'token': app.user.config.rssToken, 'slug': tag.slug}) }}" class="right">
+                <i class="material-icons md-24">rss_feed</i>
+            </a>
+        </li>
+    {% endfor %}
+    </ul>
+
+    <div>
+        <a href="{{ path('untagged') }}">{{ 'tag.list.see_untagged_entries'|trans }}</a>
+    </div>
+{% endblock %}

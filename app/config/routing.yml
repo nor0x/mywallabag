@@ -1,0 +1,53 @@
+wallabag_annotation:
+  type : rest
+  resource: "@WallabagAnnotationBundle/Resources/config/routing_annotations.yml"
+
+wallabag_import:
+    resource: "@WallabagImportBundle/Controller/"
+    type: annotation
+    prefix: /import
+
+wallabag_user:
+    resource: "@WallabagUserBundle/Controller/"
+    type: annotation
+    prefix: /users
+
+wallabag_api:
+    resource: "@WallabagApiBundle/Controller/"
+    type: annotation
+    prefix: /
+
+app:
+    resource: "@WallabagCoreBundle/Controller/"
+    type: annotation
+
+doc-api:
+    resource: "@NelmioApiDocBundle/Resources/config/routing.yml"
+    prefix: /api/doc
+
+rest :
+    type : rest
+    resource : "routing_rest.yml"
+    prefix : /api
+
+homepage:
+    path: "/{page}"
+    defaults:
+        _controller: WallabagCoreBundle:Entry:showUnread
+        page : 1
+    requirements:
+        page: \d+
+
+fos_user:
+    resource: "@FOSUserBundle/Resources/config/routing/all.xml"
+
+fos_oauth_server_token:
+    resource: "@FOSOAuthServerBundle/Resources/config/routing/token.xml"
+
+craue_config_settings_modify:
+    path: /settings
+    defaults:
+        _controller: CraueConfigBundle:Settings:modify
+
+fos_js_routing:
+    resource: "@FOSJsRoutingBundle/Resources/config/routing/routing.xml"
