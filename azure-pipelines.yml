@@ -22,8 +22,5 @@ steps:
     php -version
   displayName: 'Use PHP version $(phpVersion)'
 
-- script: sudo make install
+- script: make install
   displayName: 'make install'
-  
-- script: composer install --no-interaction --prefer-dist
-  displayName: 'composer install'
